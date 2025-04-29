@@ -1,8 +1,226 @@
 <html>
 <head>
-    <title>2025-04-28: Web Scraping FortniteTracker.com</title>
+    <title>2025-04-28: Fncs Webscraping</title>
+    <style>
+        body {
+            font-family: "Segoe UI", sans-serif;
+            margin: 20px;
+            background-color: #003594;
+            color: white;
+        }
+        .code-section, .output-section {
+            border: 3px solid #000000;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            background-color: #FFD100;
+            color: #000000;
+            font-family: "Segoe UI", sans-serif;
+        }
+        pre {
+            background-color: white;
+            padding: 25px;
+            border-radius: 5px;
+            overflow-x: auto;
+            color: #000000;
+            font-family: "Segoe UI", sans-serif;
+        }
+        h2 {
+            margin-top: 0;
+        }
+    </style>
 </head>
 <body>
-    <h1>info</h1>
+
+    <h1>2025-04-28: FNCS Webscraping FortniteTracker.com</h1>
+
+    <div class="code-section">
+        <h2>Code</h2>
+        <pre><code>
+            from selenium import webdriver
+            from selenium.webdriver.common.by import By
+            from selenium.common.exceptions import WebDriverException
+            import time
+            import re
+            import pandas as pd
+            
+            def create_driver():
+                """Create and return a new Selenium WebDriver instance."""
+                options = webdriver.ChromeOptions()
+                options.add_argument('--start-maximized')
+                # options.add_argument('--headless')  # Uncomment for headless mode (no browser window)
+                driver = webdriver.Chrome(options=options)
+                return driver
+            
+            def safe_find_elements(driver, by, value):
+                """Try to find elements, if driver is dead restart it."""
+                try:
+                    elements = driver.find_elements(by, value)
+                    return elements
+                except WebDriverException as e:
+                    print(f"WebDriverException occurred: {e}")
+                    print("Restarting the WebDriver...")
+                    driver.quit()
+                    driver = create_driver()
+                    driver.get(URL)
+                    elements = driver.find_elements(by, value)
+                    return elements, driver
+            
+            
+            URL = "https://fortnitetracker.com/events/epicgames_S34_FNCSMajor2_Final_NAC?window=S34_FNCSMajor2_Final_Day2_NAC&sm=S34_FNCSMajor2_Final_CumulativeLeaderboardDef"  # <- Replace with your site
+            
+            driver = create_driver()
+            driver.get(URL)
+            
+            data_rows = []
+            
+            try:
+                matches = driver.find_elements(By.XPATH, "//table/tbody/tr")  # Example selector
+            
+                # Use safe finder
+                for match in matches:
+                    try:
+                        td_elements = match.find_elements(By.TAG_NAME, 'td')  # Each <td> in this row
+                        row_data = [td.text for td in td_elements]  # Get text from each <td>
+                        if row_data:  # Only add non-empty rows
+                            data_rows.append(row_data)
+                    except WebDriverException as e:
+                        print(f"Error inside row loop: {e}")
+                        driver.quit()
+                        driver = create_driver()
+                        driver.get(URL)
+                        matches, driver = safe_find_elements(driver, By.XPATH, "//table/tbody/tr")
+                        continue
+            
+            finally:
+                driver.quit()
+            
+            df = pd.DataFrame(data_rows)
+            df.columns = ["Rank", "Player", "Points", "Games", "Wins", "Cash Prize"]
+            
+            def clean_player_names(name):
+                """Fixing Name Formating"""
+                name = name.replace('\n', ' ').replace('+', '/')
+                name = re.sub(r'\\b', '', name)
+                name = re.sub(r'\s+', ' ', name).strip()
+                return name
+            
+            df['Player'] = df['Player'].apply(clean_player_names)
+            df.to_csv('FNCS.csv', index=False)
+            # Print the DataFrame
+            print(df)</code></pre>
+    </div>
+
+    <div class="output-section">
+        <h2>CSV</h2>
+        <pre>
+            Rank, Player, Points, Games, Wins, Cash Prize
+            1,Ritual XSET / Cold Twisted Minds / Peterbot Falcons Esport,842,12,1,"$180,000 / $60,000 each"
+            2,Clix XSET / Higgs XSET / Eomzo Elite Esports,831,12,3,"$76,500 / $25,500 each"
+            3,Reet Swamp Gaming / Cooper Dignitas / Curly Witness The Journey,682,12,1,"$51,000 / $17,000 each"
+            4,Visxals / Braydz Fear / Aminished Chronic,679,12,1,"$35,700 / $11,900 each"
+            5,Ajerss / Acorn Dignitas / Pollo Gentle Mates,638,12,1,"$28,050 / $9,350 each"
+            6,Rapid Chronic / Bugha / Threats Man City Esports,612,12,2,"$20,400 / $6,800 each"
+            7,Khanada Dignitas / Boltz / Sphinx Elite Esports,593,12,1,"$20,400 / $6,800 each"
+            8,Muz XSET / Japko Falcons Esport / Rise,572,12,1,"$20,400 / $6,800 each"
+            9,Shadow / Curve Future Talent / nvtylerh Team Sarrow,542,12,0,"$20,400 / $6,800 each"
+            10,Takii One True Army / Eshouu Witness The Journey / verT,448,12,0,"$20,400 / $6,800 each"
+            11,Joji / Doniee Chronic / Kraez Cynapse Esports,401,12,1,"$10,200 / $3,400 each"
+            12,Noizy Monarcos / Krreon Monarcos / Tonyfv,379,12,0,"$10,200 / $3,400 each"
+            13,Synix / Polar EXE / Decay Flawless Esports,351,12,0,"$10,200 / $3,400 each"
+            14,Brycx / GМoney / oSydd Witness The Journey,285,12,0,"$10,200 / $3,400 each"
+            15,Avivv 2AM Esports / skqttles / Chimp,276,12,0,"$10,200 / $3,400 each"
+            16,Golden Cynapse Esports / Void Azteca Esport / Ozone FNO Esports,252,12,0,"$5,100 / $1,700 each"
+            17,Eulogy 2AM Esports / Phenom Team Summit / Yusuf Solitary,209,12,0,"$5,100 / $1,700 each"
+            18,Bucke / Okis / Cam,200,12,0,"$5,100 / $1,700 each"
+            19,Enough OneUp Esports / Mxfia 2AM Esports / haze7 EXE,196,12,0,"$5,100 / $1,700 each"
+            20,Dolzeur SlovatiX Esports / Natmozs Honeyers Crew / Aiden Valioux,174,12,0,"$5,100 / $1,700 each"
+            21,cillic Witness The Journey / Jargue Azteca Esport / King Witness The Journey,168,12,0,"$2,550 / $850 each"
+            22,NoahWPlays / Chaos EXE / Kasz Azteca Esport,155,12,0,"$2,550 / $850 each"
+            23,josh EXE / cauzerz Azteca Esport / Magma Overtake,151,12,0,"$2,550 / $850 each"
+            24,azt thetik / Fuzeac / maniacǃ,150,12,0,"$2,550 / $850 each"
+            25,Aoxy. / jojofishy Future Talent / Pykz,143,12,0,"$2,550 / $850 each"
+            26,Twunti Chronic / Liam Witness The Journey / Broken Cynapse Esports,131,12,0,
+            27,Catman EXE / Amplify Incisive / Lorzizs Incisive,113,12,0,
+            28,sandman Solitary / Evyn Honeyers Crew / Zandaa Fear,112,12,0,
+            29,JxyHD Azteca Esport / zaklz EXE / pollus Chronic,97,12,0,
+            30,Seek One True Army / Dash Ronin / Veer FNO Esports,96,12,0,
+            31,Vortek / nurface / Bacon Vanish,70,12,0,
+            32,napz Chronic / Cyriz Solitary / Zire Solitary,44,12,0,
+            33,Faallen 2AM Esports / Nitro OneUp Esports / Jutraz,16,12,0,</pre>
+
+        <h2>Code Output (Pandas DF)</h2>
+        <pre>
+            Rank                                             Player Points Games Wins  \
+            0     1  Ritual XSET / Cold Twisted Minds / Peterbot Fa...    842    12    1   
+            1     2       Clix XSET / Higgs XSET / Eomzo Elite Esports    831    12    3   
+            2     3  Reet Swamp Gaming / Cooper Dignitas / Curly Wi...    682    12    1   
+            3     4          Visxals / Braydz Fear / Aminished Chronic    679    12    1   
+            4     5       Ajerss / Acorn Dignitas / Pollo Gentle Mates    638    12    1   
+            5     6   Rapid Chronic / Bugha / Threats Man City Esports    612    12    2   
+            6     7    Khanada Dignitas / Boltz / Sphinx Elite Esports    593    12    1   
+            7     8             Muz XSET / Japko Falcons Esport / Rise    572    12    1   
+            8     9  Shadow / Curve Future Talent / nvtylerh Team S...    542    12    0   
+            9    10  Takii One True Army / Eshouu Witness The Journ...    448    12    0   
+            10   11      Joji / Doniee Chronic / Kraez Cynapse Esports    401    12    1   
+            11   12          Noizy Monarcos / Krreon Monarcos / Tonyfv    379    12    0   
+            12   13         Synix / Polar EXE / Decay Flawless Esports    351    12    0   
+            13   14         Brycx / GМoney / oSydd Witness The Journey    285    12    0   
+            14   15               Avivv 2AM Esports / skqttles / Chimp    276    12    0   
+            15   16  Golden Cynapse Esports / Void Azteca Esport / ...    252    12    0   
+            16   17  Eulogy 2AM Esports / Phenom Team Summit / Yusu...    209    12    0   
+            17   18                                 Bucke / Okis / Cam    200    12    0   
+            18   19  Enough OneUp Esports / Mxfia 2AM Esports / haz...    196    12    0   
+            19   20  Dolzeur SlovatiX Esports / Natmozs Honeyers Cr...    174    12    0   
+            20   21  cillic Witness The Journey / Jargue Azteca Esp...    168    12    0   
+            21   22        NoahWPlays / Chaos EXE / Kasz Azteca Esport    155    12    0   
+            22   23  josh EXE / cauzerz Azteca Esport / Magma Overtake    151    12    0   
+            23   24                      azt thetik / Fuzeac / maniacǃ    150    12    0   
+            24   25             Aoxy. / jojofishy Future Talent / Pykz    143    12    0   
+            25   26  Twunti Chronic / Liam Witness The Journey / Br...    131    12    0   
+            26   27   Catman EXE / Amplify Incisive / Lorzizs Incisive    113    12    0   
+            27   28  sandman Solitary / Evyn Honeyers Crew / Zandaa...    112    12    0   
+            28   29   JxyHD Azteca Esport / zaklz EXE / pollus Chronic     97    12    0   
+            29   30  Seek One True Army / Dash Ronin / Veer FNO Esp...     96    12    0   
+            30   31                    Vortek / nurface / Bacon Vanish     70    12    0   
+            31   32      napz Chronic / Cyriz Solitary / Zire Solitary     44    12    0   
+            32   33  Faallen 2AM Esports / Nitro OneUp Esports / Ju...     16    12    0   
+            
+                             Cash Prize  
+            0   $180,000 / $60,000 each  
+            1    $76,500 / $25,500 each  
+            2    $51,000 / $17,000 each  
+            3    $35,700 / $11,900 each  
+            4     $28,050 / $9,350 each  
+            5     $20,400 / $6,800 each  
+            6     $20,400 / $6,800 each  
+            7     $20,400 / $6,800 each  
+            8     $20,400 / $6,800 each  
+            9     $20,400 / $6,800 each  
+            10    $10,200 / $3,400 each  
+            11    $10,200 / $3,400 each  
+            12    $10,200 / $3,400 each  
+            13    $10,200 / $3,400 each  
+            14    $10,200 / $3,400 each  
+            15     $5,100 / $1,700 each  
+            16     $5,100 / $1,700 each  
+            17     $5,100 / $1,700 each  
+            18     $5,100 / $1,700 each  
+            19     $5,100 / $1,700 each  
+            20       $2,550 / $850 each  
+            21       $2,550 / $850 each  
+            22       $2,550 / $850 each  
+            23       $2,550 / $850 each  
+            24       $2,550 / $850 each  
+            25                           
+            26                           
+            27                           
+            28                           
+            29                           
+            30                           
+            31                           
+            32   </pre>
+    </div>
+
 </body>
 </html>
