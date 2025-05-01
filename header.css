@@ -1,0 +1,23 @@
+.header{
+    height: 60px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.left_head{
+    width: 200px;
+    background-color: aqua;
+}
+.mid_head{
+    flex: 1;
+    margin-left: 30px;
+    margin-right: 70px;
+    max-width: 400px;
+    background-color: rgb(136, 255, 0);
+}
+.right_head{
+    width: 300px;
+    background-color: rgb(255, 0, 242);
+}
+.search_bar{
+}
