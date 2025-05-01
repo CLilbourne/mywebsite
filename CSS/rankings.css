@@ -1,0 +1,136 @@
+.rankings{
+    display: flex;
+    justify-content: space-between;
+}
+.main{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 90%;
+    margin-right: 10px;
+}
+.player_card{
+    max-height: 80px;
+    justify-content:left;
+    z-index: 1;
+    background-color: rgba(66, 8, 80, 0.253);
+    display: flex;
+    flex-direction: row;
+    flex:1;
+    height: 80px;
+    border-radius: 20px;
+    border-color: rgb(46, 35, 43);
+    border-width: 1px;
+    border-style: solid;
+    align-items: center;
+    padding-left: 20px;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.player_photo{
+    width:  60px;
+    margin-left: 10px;
+    margin-right: 30px;
+    border-radius: 90px;
+}
+.player_name{
+    font-family: 'roboto';
+    font-size: 30px;
+    font-weight: bold;
+    line-height: 18px;
+    margin-bottom: 6px;
+    width: 250px;
+    margin-top: 6px;
+    text-align: left;
+    color: rgb(145, 78, 141);
+}
+.player_roleIGL{
+    font-family: 'roboto';
+    font-size: 20px;
+    line-height: 18px;
+    margin-bottom: 6px;
+    margin-top: 6px;
+    text-align: left;
+    color: rgb(0, 0, 0);
+    padding: 8px;
+    border-color: rgb(8, 54, 2);
+    border-width: 3px;
+    border-style: solid;
+    border-radius: 20px;
+    font-weight: bold;
+    background-color: rgba(25, 179, 89, 0.432);
+}
+.player_roleFRAG{
+    font-family: 'roboto';
+    font-size: 20px;
+    line-height: 18px;
+    margin-bottom: 6px;
+    margin-top: 6px;
+    text-align: left;
+    color: rgb(0, 0, 0);
+    padding: 8px;
+    border-color: rgb(121, 4, 10);
+    border-width: 3px;
+    border-style: solid;
+    border-radius: 20px;
+    font-weight: bold;
+    background-color: rgba(155, 0, 13, 0.432);
+}
+.player_roleSUP{
+    font-family: 'roboto';
+    font-size: 20px;
+    line-height: 18px;
+    margin-bottom: 6px;
+    margin-top: 6px;
+    text-align: left;
+    color: rgb(0, 0, 0);
+    
+    padding: 8px;
+    border-color: rgb(6, 123, 158);
+    border-width: 3px;
+    border-style: solid;
+    border-radius: 20px;
+    font-weight: bold;
+    background-color: rgba(17, 167, 212, 0.425);
+}
+
+.rank{
+    
+    width: 75px;
+    font-family: 'roboto';
+    font-size: 30px;
+    font-weight: bold;
+    line-height: 18px;
+    margin-bottom: 6px;
+    margin-top: 6px;
+    text-align: left;
+    color: rgb(255, 255, 255)
+}
+.points_tag{
+    margin-top: 5px;
+    margin-left: auto;
+    margin-right: 30px;
+}
+.points_number{
+    
+    font-family: 'roboto';
+    font-size: 30px;
+    font-weight: bold;
+    line-height: 18px;
+    margin-bottom: 6px;
+    margin-top: 6px;
+    text-align: left;
+    color: rgb(255, 255, 255)
+}
+.avg{
+    margin-right: 10px;
+    font-family: 'roboto';
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 18px;
+    margin-bottom: 6px;
+    margin-top: 6px;
+    text-align: left;
+    color: rgb(175, 172, 172)
+}
