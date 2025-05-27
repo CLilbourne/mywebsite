@@ -9,6 +9,9 @@ import Counter from "./counter.jsx";
 import Colorpicker from "./colorpicker.jsx";
 import Cars from "./cars.jsx";
 import Todo from "./todo.jsx";
+import Players from "./players.jsx"
+import DigitalClock from "./DigitalClock.jsx";
+import StopWatch from "./StopWatch.jsx";
 function App() {
 
   return(
@@ -18,6 +21,9 @@ function App() {
     <Colorpicker></Colorpicker>
     <Cars></Cars>
     <Todo></Todo>
+    <DigitalClock></DigitalClock>
+    <StopWatch></StopWatch>
+    <Players></Players>
     <Button></Button>
     <Student name="Fred" age= {30} isStudent={true}></Student>
     <Student name="Jim" age= {12} isStudent={false}></Student>
